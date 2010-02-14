@@ -66,6 +66,16 @@ class RescueEachTest < ActiveSupport::TestCase
     assert_equal [[2],[4],[6],[8],[10]], error_object.errors.map(&:args)
   end
   
+  test "error object contains args for Symbol#to_proc sugar" do
+    error_object = nil
+    begin
+      [42].rescue_each &:foo
+    rescue RescueEach::Error => e
+      error_object = e
+    end
+    assert_equal [[42]], error_object.errors.map(&:args)
+  end
+  
   def foo_abc
     bar_def
   end

@@ -70,7 +70,7 @@ module Enumerable
     errors = []
     send options[:method] do |*args|
       begin
-        yield *args
+        yield *args.dup
       rescue Exception => e
         item = RescueEach::Error::Item.new e, args
         if options[:stderr] == :full
