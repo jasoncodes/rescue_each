@@ -1,1 +1,0 @@
-require 'rescue_each'

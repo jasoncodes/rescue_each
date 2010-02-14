@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'rake'
 require 'rake/testtask'
 
@@ -10,4 +11,22 @@ Rake::TestTask.new(:test) do |t|
   t.libs << 'test'
   t.pattern = 'test/**/*_test.rb'
   t.verbose = true
+end
+
+task :test => :check_dependencies
+
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    gem.name = "rescue_each"
+    gem.summary = "Rescue multiple exceptions when working with Enumerable objects"
+    gem.email = "jason@jasoncodes.com"
+    gem.homepage = "http://github.com/jasoncodes/rescue_each"
+    gem.authors = ["Jason Weathered"]
+    gem.has_rdoc = false
+    gem.add_dependency 'activesupport'
+  end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
