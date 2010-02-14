@@ -1,0 +1,100 @@
+require 'test_helper'
+
+class RescueEachTest < ActiveSupport::TestCase
+  
+  test "return value" do
+    enum = (1..5)
+    assert_equal enum, enum.each(&:nil?)
+  end
+  
+  test "calls block" do
+    output = []
+    (1..5).rescue_each do |x|
+      output << x
+    end
+    assert_equal (1..5).collect, output
+  end
+  
+  test "continues after an error" do
+    output = []
+    assert_raise RescueEach::Error do
+      (1..5).rescue_each do |x|
+        output << x
+        raise 'test' if x == 3
+      end
+    end
+    assert_equal (1..5).collect, output
+  end
+  
+  test "empty array doesn't call block" do
+    [].rescue_each do
+      raise 'test'
+    end
+  end
+  
+  test "empty block doesn't raise" do
+    [42].rescue_each do
+    end
+  end
+  
+  test "no param block can raise" do
+    assert_raise RescueEach::Error do
+      [42].rescue_each do
+        raise 'test'
+      end
+    end
+  end
+  
+  test "each_with_index args pass through correctly" do
+    output = []
+    [:foo, :bar].rescue_each_with_index do |obj,i|
+      output << [obj,i]
+    end
+    expected = [[:foo, 0], [:bar, 1]]
+    assert_equal expected, output
+  end
+  
+  test "error object contains args that triggered error" do
+    error_object = nil
+    begin
+      (1..10).rescue_each do |i|
+        raise 'foo' if (i%2) == 0
+      end
+    rescue RescueEach::Error => e
+      error_object = e
+    end
+    assert_equal [[2],[4],[6],[8],[10]], error_object.errors.map(&:args)
+  end
+  
+  def foo_abc
+    bar_def
+  end
+  
+  def bar_def
+    raise 'baz'
+  end
+  
+  test "captured error message and backtrace" do
+    
+    error_object = nil
+    begin
+      [42].rescue_each do |i|
+        foo_abc
+      end
+    rescue RescueEach::Error => e
+      error_object = e
+    end
+    
+    assert_equal 1, error_object.errors.size
+    the_exception = error_object.errors.first.exception
+    
+    assert_kind_of RuntimeError, the_exception
+    assert_equal 'baz', the_exception.message
+    
+    assert_true the_exception.backtrace.size > 2
+    assert_match /:in `bar_def'\Z/, the_exception.backtrace[0]
+    assert_match /:in `foo_abc'\Z/, the_exception.backtrace[1]
+    
+  end
+  
+end
