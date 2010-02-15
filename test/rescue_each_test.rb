@@ -183,9 +183,15 @@ class RescueEachTest < ActiveSupport::TestCase
     assert_match /lorem ipsum/, err
   end
   
-  test "rescue_send returns output of proxied method" do
+  test "rescue_map returns output of proxied method" do
     output = (1..5).rescue_map { |x| x*x }
     assert_equal [1,4,9,16,25], output
+  end
+  
+  test "rescue_send calls correct method and returns result" do
+    odds = (1..5).rescue_send(:reject) { |i| i%2 == 0 }
+    assert_false odds.empty?
+    assert_true odds.all? &:odd?
   end
   
   test "find_each exists on active record objects" do
