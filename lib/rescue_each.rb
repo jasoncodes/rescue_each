@@ -71,7 +71,7 @@ module Enumerable
     options.reverse_merge! :args => []
     
     errors = []
-    send options[:method], *options[:args] do |*args|
+    retval = send options[:method], *options[:args] do |*args|
       begin
         yield *args.dup
       rescue Exception => e
@@ -96,7 +96,7 @@ module Enumerable
       end
     end
     raise RescueEach::Error, errors unless errors.empty?
-    self
+    return retval
   end
   
   def rescue_send(method, *args, &block)
@@ -112,6 +112,10 @@ module Enumerable
     
     rescue_each rescue_options, &block
     
+  end
+  
+  def rescue_map(*args, &block)
+    rescue_send :map, *args, &block
   end
   
   def rescue_each_with_index(*args, &block)
