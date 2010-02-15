@@ -1,5 +1,5 @@
 # `rescue_each`
-## Rescue multiple exceptions when working with Enumerable objects.
+## Rescue multiple exceptions when enumerating over Enumerable or ActiveRecord objects.
 
 Say you have a batch rake task which runs from cron which consists of many independent tasks ran in a loop.
 These tasks could be anything from updating cached database entries to file conversions.
@@ -33,12 +33,12 @@ transforms into:
       raise 'example'
     end
 
-You'll probably find this handy if your batch task normally has its own status output.
+You'll probably find this handy if your batch task has its own status output as this mode will output an error summary inline.
 
 #### Other Methods
 
-`rescue_each` provides proxies for `each_with_index`, `find_each` and `find_in_batches`.
-If you want to call another method on an `Enumerable`, you can use `rescue_send`:
+`rescue_each` also provides proxies for `map`, `each_with_index`, `find_each` and `find_in_batches`.
+You can also use `rescue_each` on any method taking a block by calling `rescue_send`:
 
     odds = (1..5).rescue_send(:reject) { |i| i%2 == 0 }
 

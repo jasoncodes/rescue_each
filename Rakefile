@@ -19,7 +19,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "rescue_each"
-    gem.summary = "Rescue multiple exceptions when working with Enumerable objects"
+    gem.summary = "Rescue multiple exceptions when enumerating over Enumerable or ActiveRecord objects"
     gem.email = "jason@jasoncodes.com"
     gem.homepage = "http://github.com/jasoncodes/rescue_each"
     gem.authors = ["Jason Weathered"]
