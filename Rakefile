@@ -30,3 +30,8 @@ begin
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
+
+desc "Open an IRB session with this library loaded"
+task :console do
+  sh "irb -rrubygems -I lib -r rescue_each.rb"
+end
