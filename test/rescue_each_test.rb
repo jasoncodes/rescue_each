@@ -175,4 +175,11 @@ class RescueEachTest < ActiveSupport::TestCase
     assert_equal [1,4,9,16,25], output
   end
   
+  test "find_each exists on active record objects" do
+    [:find_each, :find_in_batches].each do |method|
+      assert_true ActiveRecord::Base.methods.include? "#{method}"
+      assert_true ActiveRecord::Base.methods.include? "rescue_#{method}"
+    end
+  end
+  
 end

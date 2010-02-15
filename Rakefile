@@ -25,6 +25,7 @@ begin
     gem.authors = ["Jason Weathered"]
     gem.has_rdoc = false
     gem.add_dependency 'activesupport'
+    gem.add_development_dependency 'activerecord'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
