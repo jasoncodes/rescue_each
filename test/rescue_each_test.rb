@@ -16,14 +16,35 @@ class RescueEachTest < ActiveSupport::TestCase
   end
   
   test "continues after an error" do
+    error_object = nil
     output = []
-    assert_raise RescueEach::Error do
+    begin
       (1..5).rescue_each do |x|
         output << x
         raise 'test' if x == 3
       end
+    rescue RescueEach::Error => e
+      error_object = e
     end
     assert_equal (1..5).collect, output
+    assert_false error_object.aborted
+    assert_no_match /and then aborted/, error_object.to_s.lines.collect.last
+  end
+  
+  test "stops after error limit" do
+    error_object = nil
+    output = []
+    begin
+      (1..10).rescue_each :error_limit => 3 do |x|
+        output << x
+        raise 'test' if x%2 == 0
+      end
+    rescue RescueEach::Error => e
+      error_object = e
+    end
+    assert_equal (1..6).collect, output
+    assert_true error_object.aborted
+    assert_match /and then aborted/, error_object.to_s.lines.collect.last
   end
   
   test "empty array doesn't call block" do

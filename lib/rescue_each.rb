@@ -4,10 +4,11 @@ module RescueEach
   
   class Error < StandardError
     
-    attr_reader :errors
+    attr_reader :errors, :aborted
     
-    def initialize(errors)
+    def initialize(errors, aborted=false)
       @errors = errors
+      @aborted = aborted
     end
     
     class Item < Struct.new :exception, :args
@@ -56,6 +57,7 @@ module RescueEach
         msg << "\n"
       end
       msg << "rescue_each caught #{errors.size} errors"
+      msg << ", and then aborted." if aborted
       msg.join
     end
     
@@ -65,7 +67,7 @@ module RescueEach
     
     module Object
       
-      RESCUE_EACH_OPTIONS = [:stderr]
+      RESCUE_EACH_OPTIONS = [:stderr, :error_limit]
       
       def rescue_each(options = {})
         
@@ -95,6 +97,10 @@ module RescueEach
             end
             
             errors << item
+            
+            if options[:error_limit] && errors.size >= options[:error_limit]
+              raise RescueEach::Error.new(errors, true)
+            end
             
           end
         end
