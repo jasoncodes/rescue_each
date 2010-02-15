@@ -6,6 +6,12 @@ These tasks could be anything from updating cached database entries to file conv
 
 Once of these tasks fails, perhaps there's a corrupt image. Normally this would mean the entire batch task fails. But with rescue_each the other items can be processed and any errors will be re-raised at the end to be caught by your cron script.
 
+### Installation
+
+You can install from Gemcutter by running:
+
+    sudo gem install rescue_each
+
 ### Usage
 
 #### Basics
