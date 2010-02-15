@@ -17,11 +17,12 @@ module RescueEach
       end
       def args_short
         args_str = args.map do |arg|
-          lines = arg.inspect.lines.collect
-          if lines.size == 1
-            lines.first
+          str = arg.inspect
+          max_length = 500
+          if str.size > max_length
+            str.slice(0, max_length) + " [#{str.size-max_length} more chars...]"
           else
-            lines.first + " [#{lines.size-1} more...]"
+            str
           end
         end
         "args: " + args_str.join(", ")

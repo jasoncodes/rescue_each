@@ -154,6 +154,19 @@ class RescueEachTest < ActiveSupport::TestCase
     assert_match /foo bar/, err
   end
   
+  test "stderr output truncates long args" do
+    
+    err = capture_stderr do
+      assert_raise RescueEach::Error do
+        ['foo bar '*1000].rescue_each(:stderr => true) { raise 'foo' }
+      end
+    end
+    
+    assert_operator err.size, :>=, 100
+    assert_operator err.size, :<=, 1000
+    
+  end
+  
   test "rescue_send passes through args" do
     assert_true (1..5).rescue_send :include?, 3
     assert_false (1..5).rescue_send :include?, 6
