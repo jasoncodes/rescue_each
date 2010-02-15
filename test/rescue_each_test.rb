@@ -107,4 +107,29 @@ class RescueEachTest < ActiveSupport::TestCase
     
   end
   
+  test "Ctrl-C in IRB should break out of the loop" do
+    
+    module ::IRB
+      class Abort < Exception; end
+    end
+    
+    error_object = nil
+    output = []
+    begin
+      (1..5).rescue_each do |i|
+        raise 'foo bar' if i == 2
+        output << i
+        raise ::IRB::Abort, 'abort then interrupt!!' if i == 4
+      end
+    rescue ::IRB::Abort => e
+      error_object = e
+    end
+    
+    assert_equal [1,3,4], output
+    assert_kind_of ::IRB::Abort, error_object
+    assert_match /abort then interrupt/, error_object.message
+    assert_match /foo bar/, error_object.message
+    
+  end
+  
 end

@@ -72,13 +72,24 @@ module Enumerable
       begin
         yield *args.dup
       rescue Exception => e
+        
         item = RescueEach::Error::Item.new e, args
         if options[:stderr] == :full
           $stderr.puts "rescue_each error: #{item}" if options[:stderr]
         elsif options[:stderr]
           $stderr.puts "rescue_each error: #{item.short_message}"
         end
+        
+        if e.class.name == 'IRB::Abort'
+          if errors.empty?
+            raise
+          else
+            raise ::IRB::Abort, e.message + "\n" + RescueEach::Error.new(errors).to_s
+          end
+        end
+        
         errors << item
+        
       end
     end
     raise RescueEach::Error, errors unless errors.empty?
