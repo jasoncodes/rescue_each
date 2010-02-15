@@ -154,4 +154,20 @@ class RescueEachTest < ActiveSupport::TestCase
     assert_match /foo bar/, err
   end
   
+  test "rescue_send passes through args" do
+    assert_true (1..5).rescue_send :include?, 3
+    assert_false (1..5).rescue_send :include?, 6
+  end
+  
+  test "rescue_send handles rescue_each options" do
+    err = capture_stderr do
+      assert_raise RescueEach::Error do
+        [42].rescue_send :each, :stderr => true do
+          raise 'lorem ipsum'
+        end
+      end
+    end
+    assert_match /lorem ipsum/, err
+  end
+  
 end

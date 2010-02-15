@@ -10,7 +10,7 @@ Once of these tasks fails, perhaps there's a corrupt image. Normally this would 
 
 #### Basics
 
-Simply replace your `each` and `each_with_index` calls with `rescue_each` and `rescue_each_with_index` respectively:
+Simply replace your `each` calls with `rescue_each`:
 
     BatchTasks.all.each &:process!
 
@@ -28,6 +28,13 @@ transforms into:
     end
 
 You'll probably find this handy if your batch task normally has its own status output.
+
+#### Other Methods
+
+`rescue_each` provides proxies for `each_with_index`, `find_each` and `find_in_batches`.
+If you want to call another method on an `Enumerable`, you can use `rescue_send`:
+
+    odds = (1..5).rescue_send(:reject) { |i| i%2 == 0 }
 
 ### Note on Patches/Pull Requests
  

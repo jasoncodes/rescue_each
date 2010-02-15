@@ -62,13 +62,16 @@ end
 
 module Enumerable
   
+  RESCUE_EACH_OPTIONS = [:stderr]
+  
   def rescue_each(options = {})
     
-    options.assert_valid_keys :stderr, :method
+    options.assert_valid_keys :method, :args, *RESCUE_EACH_OPTIONS
     options.reverse_merge! :method => :each
+    options.reverse_merge! :args => []
     
     errors = []
-    send options[:method] do |*args|
+    send options[:method], *options[:args] do |*args|
       begin
         yield *args.dup
       rescue Exception => e
@@ -96,9 +99,31 @@ module Enumerable
     self
   end
   
-  def rescue_each_with_index(options = {}, &block)
-    options = options.reverse_merge :method => :each_with_index
-    rescue_each(options, &block)
+  def rescue_send(method, *args, &block)
+    
+    args = args.dup
+    options = args.extract_options!
+    rescue_options = options.reject { |k,v| !RESCUE_EACH_OPTIONS.include? k }
+    options.except! *RESCUE_EACH_OPTIONS
+    args << options unless options.empty?
+    
+    rescue_options[:method] = method
+    rescue_options[:args] = args
+    
+    rescue_each rescue_options, &block
+    
+  end
+  
+  def rescue_each_with_index(*args, &block)
+    rescue_send :each_with_index, *args, &block
+  end
+  
+  def rescue_find_each(*args, &block)
+    rescue_send :find_each, *args, &block
+  end
+  
+  def rescue_find_in_batches(*args, &block)
+    rescue_send :find_in_batches, *args, &block
   end
   
 end
