@@ -132,4 +132,26 @@ class RescueEachTest < ActiveSupport::TestCase
     
   end
   
+  test "no stderr option doesn't output to stderr" do
+    err = capture_stderr do
+      assert_raise RescueEach::Error do
+        [42].rescue_each do
+          raise 'foo bar'
+        end
+      end
+    end
+    assert_equal '', err
+  end
+  
+  test "stderr option outputs to stderr" do
+    err = capture_stderr do
+      assert_raise RescueEach::Error do
+        [42].rescue_each :stderr => true do
+          raise 'foo bar'
+        end
+      end
+    end
+    assert_match /foo bar/, err
+  end
+  
 end
