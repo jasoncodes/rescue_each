@@ -215,10 +215,13 @@ class RescueEachTest < ActiveSupport::TestCase
     assert_true odds.all? &:odd?
   end
   
-  test "find_each exists on active record objects" do
-    [:find_each, :find_in_batches].each do |method|
-      assert_true ActiveRecord::Base.methods.include? "#{method}"
-      assert_true ActiveRecord::Base.methods.include? "rescue_#{method}"
+  test "rescued find methods exist on active record objects" do
+    [:find_each, :find_in_batches].each do |method_base|
+      ["#{method_base}", "rescue_#{method_base}"].each do |method|
+        [ActiveRecord::Base, ActiveRecord::Base.scoped(:limit => 42)].each do |object|
+          assert_true object.respond_to? method
+        end
+      end
     end
   end
   
