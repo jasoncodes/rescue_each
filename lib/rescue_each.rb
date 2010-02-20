@@ -112,7 +112,7 @@ module RescueEach
         
         args = args.dup
         options = args.extract_options!
-        rescue_options = options.reject { |k,v| !RESCUE_EACH_OPTIONS.include? k }
+        rescue_options = options.slice *RESCUE_EACH_OPTIONS
         options.except! *RESCUE_EACH_OPTIONS
         args << options unless options.empty?
         
