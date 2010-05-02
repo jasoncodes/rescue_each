@@ -153,6 +153,26 @@ class RescueEachTest < ActiveSupport::TestCase
     
   end
   
+  test "Ctrl-C from outside IRB should break out of the loop" do
+    
+    error_object = nil
+    output = []
+    begin
+      (1..5).rescue_each do |i|
+        raise 'foo bar' if i == 2
+        output << i
+        raise ::Interrupt if i == 4
+      end
+    rescue ::Interrupt => e
+      error_object = e
+    end
+    
+    assert_equal [1,3,4], output
+    assert_kind_of ::Interrupt, error_object
+    assert_match /foo bar/, error_object.message
+    
+  end
+  
   test "no stderr option doesn't output to stderr" do
     err = capture_stderr do
       assert_raise RescueEach::Error do

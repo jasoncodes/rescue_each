@@ -88,11 +88,12 @@ module RescueEach
               $stderr.puts "rescue_each error: #{item.short_message}"
             end
             
-            if e.class.name == 'IRB::Abort'
+            # should fail immediately on Interrupt exceptions (i.e. Ctrl-C)
+            if %w(Interrupt IRB::Abort).include? e.class.name
               if errors.empty?
                 raise
               else
-                raise ::IRB::Abort, e.message + "\n" + RescueEach::Error.new(errors).to_s
+                raise e.class, e.message + "\n" + RescueEach::Error.new(errors).to_s
               end
             end
             
