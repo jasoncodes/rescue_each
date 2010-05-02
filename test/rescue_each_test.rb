@@ -66,13 +66,40 @@ class RescueEachTest < ActiveSupport::TestCase
     end
   end
   
-  test "each_with_index args pass through correctly" do
+  test "rescue_each_with_index args pass through correctly with 2 params" do
     output = []
     [:foo, :bar].rescue_each_with_index do |obj,i|
       output << [obj,i]
     end
     expected = [[:foo, 0], [:bar, 1]]
     assert_equal expected, output
+  end
+  
+  test "rescue_each_with_index args pass through correctly args param" do
+    output = []
+    [:foo, :bar].rescue_each_with_index do |*args|
+      output << args
+    end
+    expected = [[:foo, 0], [:bar, 1]]
+    assert_equal expected, output
+  end
+  
+  test "Hash#rescue_each args for single block param" do
+    input = {:foo => 42, :bar => 12}
+    output = []
+    input.rescue_each do |args|
+      output << args
+    end
+    assert_equal input.to_a, output
+  end
+  
+  test "Hash#rescue_each args for key/value block params" do
+    input = {:foo => 42, :bar => 12}
+    output = []
+    input.rescue_each do |k, v|
+      output << [k,v]
+    end
+    assert_equal input.to_a, output
   end
   
   test "error object contains args that triggered error" do

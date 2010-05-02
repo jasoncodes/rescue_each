@@ -69,7 +69,7 @@ module RescueEach
       
       RESCUE_EACH_OPTIONS = [:stderr, :error_limit]
       
-      def rescue_each(options = {})
+      def rescue_each(options = {}, &block)
         
         options.assert_valid_keys :method, :args, *RESCUE_EACH_OPTIONS
         options.reverse_merge! :method => :each
@@ -78,7 +78,7 @@ module RescueEach
         errors = []
         retval = __send__ options[:method], *options[:args] do |*args|
           begin
-            yield *args.dup
+            block.call *args.dup
           rescue Exception => e
             
             item = RescueEach::Error::Item.new e, args
