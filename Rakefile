@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'rake/testtask'
+require 'jeweler'
 
 desc 'Default: run unit tests.'
 task :default => :test
@@ -13,29 +14,23 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = true
 end
 
-task :test => :check_dependencies
-
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "rescue_each"
-    gem.summary = "Rescue multiple exceptions when enumerating over Enumerable or ActiveRecord objects"
-    gem.email = "jason@jasoncodes.com"
-    gem.homepage = "http://github.com/jasoncodes/rescue_each"
-    gem.authors = ["Jason Weathered"]
-    gem.has_rdoc = false
-    gem.add_dependency 'activesupport'
-    gem.add_development_dependency 'activerecord'
-  end
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
+Jeweler::Tasks.new do |gem|
+  gem.name = "rescue_each"
+  gem.summary = "Rescue multiple exceptions when enumerating over Enumerable or ActiveRecord objects"
+  gem.email = "jason@jasoncodes.com"
+  gem.homepage = "http://github.com/jasoncodes/rescue_each"
+  gem.authors = ["Jason Weathered"]
+  gem.has_rdoc = false
+  gem.add_dependency 'activesupport'
+  gem.add_development_dependency 'activerecord'
 end
+Jeweler::GemcutterTasks.new
 
-desc "Open an IRB session with this library loaded"
-task :console do
-  sh "irb -rrubygems -I lib -r rescue_each.rb"
+task :lib do
+  $: << 'lib'
+  require 'rescue_each'
 end
+task :console => :lib
 
 begin
   require 'rcov/rcovtask'
