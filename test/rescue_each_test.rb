@@ -12,7 +12,7 @@ class RescueEachTest < ActiveSupport::TestCase
     (1..5).rescue_each do |x|
       output << x
     end
-    assert_equal((1..5).collect, output)
+    assert_equal((1..5).to_a, output)
   end
   
   test "continues after an error" do
@@ -26,7 +26,7 @@ class RescueEachTest < ActiveSupport::TestCase
     rescue RescueEach::Error => e
       error_object = e
     end
-    assert_equal((1..5).collect, output)
+    assert_equal((1..5).to_a, output)
     assert_false error_object.aborted
     assert_no_match(/and then aborted/, error_object.to_s.lines.to_a.last)
   end
@@ -42,7 +42,7 @@ class RescueEachTest < ActiveSupport::TestCase
     rescue RescueEach::Error => e
       error_object = e
     end
-    assert_equal((1..6).collect output)
+    assert_equal((1..6).to_a, output)
     assert_true error_object.aborted
     assert_match(/and then aborted/, error_object.to_s.lines.to_a.last)
   end
