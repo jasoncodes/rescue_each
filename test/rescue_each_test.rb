@@ -155,6 +155,31 @@ class RescueEachTest < ActiveSupport::TestCase
     
   end
   
+  test "backtrace in message should not duplicate main exception lines" do
+    
+    error_object = nil
+    begin
+      [42].rescue_each do |i|
+        foo_abc
+      end
+    rescue RescueEach::Error => e
+      error_object = e
+    end
+    
+    assert_match(/foo_abc/, error_object.message)
+    assert_match(/bar_def/, error_object.message)
+    
+    assert_no_match(/foo_abc/, error_object.backtrace.join("\n"))
+    assert_no_match(/bar_def/, error_object.backtrace.join("\n"))
+    
+    assert_match(/rescue_each\.rb/, error_object.backtrace.join("\n"))
+    assert_no_match(/rescue_each\.rb/, error_object.message)
+    
+    assert_match(/activesupport/, error_object.backtrace.join("\n"))
+    assert_no_match(/activesupport/, error_object.message)
+    
+  end
+  
   test "Ctrl-C in IRB should break out of the loop" do
     
     module ::IRB

@@ -35,8 +35,12 @@ module RescueEach
         "args: #{args.inspect}"
       end
       
+      def backtrace_lines
+        exception.backtrace.take_while { |line| !line.index(__FILE__) }
+      end
+      
       def backtrace_s
-        "\t#{exception.backtrace.join "\n\t"}"
+        "\t#{backtrace_lines.join "\n\t"}"
       end
       
       def short_message
