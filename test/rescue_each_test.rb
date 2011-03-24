@@ -12,7 +12,7 @@ class RescueEachTest < ActiveSupport::TestCase
     (1..5).rescue_each do |x|
       output << x
     end
-    assert_equal (1..5).collect, output
+    assert_equal((1..5).collect, output)
   end
   
   test "continues after an error" do
@@ -26,9 +26,9 @@ class RescueEachTest < ActiveSupport::TestCase
     rescue RescueEach::Error => e
       error_object = e
     end
-    assert_equal (1..5).collect, output
+    assert_equal((1..5).collect, output)
     assert_false error_object.aborted
-    assert_no_match /and then aborted/, error_object.to_s.lines.collect.last
+    assert_no_match(/and then aborted/, error_object.to_s.lines.to_a.last)
   end
   
   test "stops after error limit" do
@@ -42,9 +42,9 @@ class RescueEachTest < ActiveSupport::TestCase
     rescue RescueEach::Error => e
       error_object = e
     end
-    assert_equal (1..6).collect, output
+    assert_equal((1..6).collect output)
     assert_true error_object.aborted
-    assert_match /and then aborted/, error_object.to_s.lines.collect.last
+    assert_match(/and then aborted/, error_object.to_s.lines.to_a.last)
   end
   
   test "empty array doesn't call block" do
@@ -117,7 +117,7 @@ class RescueEachTest < ActiveSupport::TestCase
   test "error object contains args for Symbol#to_proc sugar" do
     error_object = nil
     begin
-      [42].rescue_each &:foo
+      [42].rescue_each(&:foo)
     rescue RescueEach::Error => e
       error_object = e
     end
@@ -150,8 +150,8 @@ class RescueEachTest < ActiveSupport::TestCase
     assert_equal 'baz', the_exception.message
     
     assert_true the_exception.backtrace.size > 2
-    assert_match /:in `bar_def'\Z/, the_exception.backtrace[0]
-    assert_match /:in `foo_abc'\Z/, the_exception.backtrace[1]
+    assert_match(/:in `bar_def'\Z/, the_exception.backtrace[0])
+    assert_match(/:in `foo_abc'\Z/, the_exception.backtrace[1])
     
   end
   
@@ -175,8 +175,8 @@ class RescueEachTest < ActiveSupport::TestCase
     
     assert_equal [1,3,4], output
     assert_kind_of ::IRB::Abort, error_object
-    assert_match /abort then interrupt/, error_object.message
-    assert_match /foo bar/, error_object.message
+    assert_match(/abort then interrupt/, error_object.message)
+    assert_match(/foo bar/, error_object.message)
     
   end
   
@@ -196,7 +196,7 @@ class RescueEachTest < ActiveSupport::TestCase
     
     assert_equal [1,3,4], output
     assert_kind_of ::Interrupt, error_object
-    assert_match /foo bar/, error_object.message
+    assert_match(/foo bar/, error_object.message)
     
   end
   
@@ -219,7 +219,7 @@ class RescueEachTest < ActiveSupport::TestCase
         end
       end
     end
-    assert_match /foo bar/, err
+    assert_match(/foo bar/, err)
   end
   
   test "stderr output truncates long args" do
@@ -236,8 +236,8 @@ class RescueEachTest < ActiveSupport::TestCase
   end
   
   test "rescue_send passes through args" do
-    assert_true (1..5).rescue_send :include?, 3
-    assert_false (1..5).rescue_send :include?, 6
+    assert_true((1..5).rescue_send(:include?, 3))
+    assert_false((1..5).rescue_send(:include?, 6))
   end
   
   test "rescue_send handles rescue_each options" do
@@ -248,7 +248,7 @@ class RescueEachTest < ActiveSupport::TestCase
         end
       end
     end
-    assert_match /lorem ipsum/, err
+    assert_match(/lorem ipsum/, err)
   end
   
   test "rescue_map returns output of proxied method" do
@@ -259,7 +259,7 @@ class RescueEachTest < ActiveSupport::TestCase
   test "rescue_send calls correct method and returns result" do
     odds = (1..5).rescue_send(:reject) { |i| i%2 == 0 }
     assert_false odds.empty?
-    assert_true odds.all? &:odd?
+    assert_true odds.all?(&:odd?)
   end
   
   test "rescued find methods exist on active record objects" do

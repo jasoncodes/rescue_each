@@ -79,7 +79,7 @@ module RescueEach
         errors = []
         retval = __send__ options[:method], *options[:args] do |*args|
           begin
-            block.call *args.dup
+            block.call(*args.dup)
           rescue Exception => e
             
             item = RescueEach::Error::Item.new e, args
@@ -114,8 +114,8 @@ module RescueEach
         
         args = args.dup
         options = args.extract_options!
-        rescue_options = options.slice *RESCUE_EACH_OPTIONS
-        options.except! *RESCUE_EACH_OPTIONS
+        rescue_options = options.slice(*RESCUE_EACH_OPTIONS)
+        options.except!(*RESCUE_EACH_OPTIONS)
         args << options unless options.empty?
         
         rescue_options[:method] = method
