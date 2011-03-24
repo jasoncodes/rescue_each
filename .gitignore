@@ -1,3 +1,4 @@
 *.gemspec
 pkg
 coverage
+Gemfile.lock
