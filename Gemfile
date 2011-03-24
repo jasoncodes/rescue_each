@@ -1,10 +1,10 @@
 source :gemcutter
 
-gem 'activesupport', '~> 3.0'
-gem 'i18n'
+gem 'activesupport', '>= 2.3'
 
 group :development do
   gem 'activerecord'
+  gem 'i18n'
   gem 'jeweler'
   gem 'test-unit'
   gem 'rcov'
