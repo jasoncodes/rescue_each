@@ -17,6 +17,7 @@ module RescueEach
       def title
         "#{exception.message} (#{exception.class})"
       end
+      
       def args_short
         args_str = args.map do |arg|
           str = arg.inspect
@@ -29,9 +30,11 @@ module RescueEach
         end
         "args: " + args_str.join(", ")
       end
+      
       def args_full
         "args: #{args.inspect}"
       end
+      
       def backtrace_s
         "\t#{exception.backtrace.join "\n\t"}"
       end
