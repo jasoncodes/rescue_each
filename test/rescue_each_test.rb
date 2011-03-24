@@ -200,6 +200,17 @@ class RescueEachTest < ActiveSupport::TestCase
     
   end
   
+  test "signal should break out of loop" do
+    output = []
+    assert_raise SignalException do
+      (1..5).rescue_each do |i|
+        raise SignalException.new('TERM') if i == 3
+        output << i
+      end
+    end
+    assert_equal [1,2], output
+  end
+  
   test "no stderr option doesn't output to stderr" do
     err = capture_stderr do
       assert_raise RescueEach::Error do

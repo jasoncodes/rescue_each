@@ -64,6 +64,10 @@ module RescueEach
     
   end
   
+  def self.pass_through_exception?(exception)
+    %w(Interrupt IRB::Abort SignalException).include? exception.class.name
+  end
+  
   module CoreExt
     
     module Object
@@ -89,8 +93,8 @@ module RescueEach
               $stderr.puts "rescue_each error: #{item.short_message}"
             end
             
-            # should fail immediately on Interrupt exceptions (i.e. Ctrl-C)
-            if %w(Interrupt IRB::Abort).include? e.class.name
+            # should fail immediately on interrupt exceptions (i.e. Ctrl-C)
+            if RescueEach.pass_through_exception? e
               if errors.empty?
                 raise
               else
