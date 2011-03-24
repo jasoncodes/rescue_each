@@ -15,3 +15,10 @@ def capture_stderr
 ensure
   $stderr = oldstderr
 end
+
+class Post < ActiveRecord::Base
+  establish_connection :adapter => 'sqlite3', :database => ':memory:'
+  connection.create_table :post do |t|
+    t.string :name
+  end
+end

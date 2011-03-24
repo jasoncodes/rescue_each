@@ -8,4 +8,5 @@ group :development do
   gem 'jeweler'
   gem 'test-unit'
   gem 'rcov'
+  gem 'sqlite3'
 end

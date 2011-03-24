@@ -265,7 +265,7 @@ class RescueEachTest < ActiveSupport::TestCase
   test "rescued find methods exist on active record objects" do
     [:find_each, :find_in_batches].each do |method_base|
       ["#{method_base}", "rescue_#{method_base}"].each do |method|
-        [ActiveRecord::Base, ActiveRecord::Base.scoped(:limit => 42)].each do |object|
+        [Post, Post.scoped(:limit => 42)].each do |object|
           assert_true object.respond_to? method
         end
       end
